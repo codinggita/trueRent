@@ -156,7 +156,7 @@ Unlike traditional platforms that focus on quantity, RentVerify focuses on:
 ## 9. Prototype Links
 
 Web Application (Main Platform):
-[Add your web/desktop Figma link here]
+(https://www.figma.com/design/Lkdf2ZaThOWhf4Uxe3hgqv/Untitled?node-id=236-4&t=53XoZ2NeFN4HPWSd-1)
 
 
 
