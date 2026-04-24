@@ -1,0 +1,28 @@
+{
+  "name": "truerent",
+  "version": "1.0.0",
+  "description": "Finding rental properties online is easy, but trusting those listings remains a challenge. Many platforms contain fake or misleading listings, which creates confusion and risk for users.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev:server": "nodemon server/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jalpatel2646/trueRent.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jalpatel2646/trueRent/issues"
+  },
+  "homepage": "https://github.com/jalpatel2646/trueRent#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.5.0"
+  }
+}
