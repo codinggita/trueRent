@@ -8,6 +8,11 @@ import Trust from './components/Trust';
 import CTA from './components/CTA';
 import Footer from './components/Footer';
 import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
+import Dashboard from './pages/Dashboard';
+import AddProperty from './pages/AddProperty';
+import PrivateRoute from './components/PrivateRoute';
+import { Toaster } from 'react-hot-toast';
 
 function LandingPage() {
   return (
@@ -35,9 +40,27 @@ function LandingPage() {
 function App() {
   return (
     <BrowserRouter>
+      <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route 
+          path="/dashboard" 
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/add-property" 
+          element={
+            <PrivateRoute>
+              <AddProperty />
+            </PrivateRoute>
+          } 
+        />
       </Routes>
     </BrowserRouter>
   );
