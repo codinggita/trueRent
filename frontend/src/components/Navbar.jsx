@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X, LogOut, Layout } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
+import { Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -62,6 +64,8 @@ const Navbar = () => {
                 <button className="btn-primary text-sm py-2 px-5">Explore App</button>
               </>
             )}
+            <Link to="/login" className="text-gray-300 hover:text-white text-sm font-medium transition-colors">Login</Link>
+            <button className="btn-primary text-sm py-2 px-5">Explore App</button>
           </div>
 
           {/* Mobile menu button */}
@@ -99,6 +103,8 @@ const Navbar = () => {
                 <button className="btn-primary w-full text-center">Explore App</button>
               </>
             )}
+            <Link to="/login" className="text-gray-300 hover:text-white block w-full text-left px-3 py-2 text-base font-medium">Login</Link>
+            <button className="btn-primary w-full text-center">Explore App</button>
           </div>
         </div>
       )}

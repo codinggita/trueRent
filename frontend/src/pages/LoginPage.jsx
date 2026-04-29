@@ -40,6 +40,21 @@ const LoginPage = () => {
     } finally {
       setIsLoading(false);
     }
+import { Link } from 'react-router-dom';
+
+const LoginPage = () => {
+  const [activeTab, setActiveTab] = useState('tenant');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({ email: '', password: '' });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
   };
 
   return (
@@ -154,6 +169,7 @@ const LoginPage = () => {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+                <form onSubmit={handleSubmit} className="space-y-5">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1.5">
                       Email Address
@@ -167,6 +183,7 @@ const LoginPage = () => {
                       className="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all text-gray-900"
                       value={formData.email}
                       onChange={handleChange}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
                   </div>
 
@@ -184,6 +201,7 @@ const LoginPage = () => {
                         className="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all text-gray-900 pr-10"
                         value={formData.password}
                         onChange={handleChange}
+                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                       />
                       <button
                         type="button"
@@ -228,6 +246,9 @@ const LoginPage = () => {
                   <Link to="/signup" className="font-medium text-green-700 hover:text-green-800">
                     Create Account
                   </Link>
+                  <a href="#" className="font-medium text-green-700 hover:text-green-800">
+                    Create Account
+                  </a>
                 </p>
               </div>
 
