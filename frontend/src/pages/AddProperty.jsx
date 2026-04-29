@@ -9,15 +9,20 @@ const AddProperty = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     title: '',
-    description: '',
-    price: '',
     location: '',
+    rent: '',
+    description: ''
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    console.log(`handleChange called with name: ${name}, value: ${value}`);
+    setForm((prev) => ({
+      ...prev,
+      [name]: value
+    }));
     if (error) setError('');
   };
 
@@ -28,7 +33,13 @@ const AddProperty = () => {
 
     try {
       const user = authService.getCurrentUser();
-      const data = await propertyService.createProperty(formData, user.token);
+      const propertyData = {
+        title: form.title,
+        description: form.description,
+        price: form.rent,
+        location: form.location,
+      };
+      const data = await propertyService.createProperty(propertyData, user.token);
       if (data.success) {
         toast.success('Listing published successfully!');
         navigate('/dashboard');
@@ -87,7 +98,7 @@ const AddProperty = () => {
                       required
                       placeholder="e.g. Luxury 2BHK in South Delhi"
                       className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600 sm:text-sm"
-                      value={formData.title}
+                      value={form.title}
                       onChange={handleChange}
                     />
                   </div>
@@ -108,7 +119,7 @@ const AddProperty = () => {
                       required
                       placeholder="e.g. Saket, New Delhi"
                       className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600 sm:text-sm"
-                      value={formData.location}
+                      value={form.location}
                       onChange={handleChange}
                     />
                   </div>
@@ -125,11 +136,11 @@ const AddProperty = () => {
                     </div>
                     <input
                       type="number"
-                      name="price"
+                      name="rent"
                       required
                       placeholder="e.g. 25000"
                       className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600 sm:text-sm"
-                      value={formData.price}
+                      value={form.rent}
                       onChange={handleChange}
                     />
                   </div>
@@ -150,7 +161,7 @@ const AddProperty = () => {
                       required
                       placeholder="Describe the property amenities, nearby landmarks, and rules..."
                       className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600 sm:text-sm"
-                      value={formData.description}
+                      value={form.description}
                       onChange={handleChange}
                     ></textarea>
                   </div>

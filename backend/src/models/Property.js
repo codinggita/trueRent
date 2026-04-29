@@ -23,6 +23,34 @@ const propertySchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  propertyType: {
+    type: String,
+  },
+  bedrooms: {
+    type: Number,
+  },
+  bathrooms: {
+    type: Number,
+  },
+  furnishing: {
+    type: String,
+  },
+  area: {
+    type: Number,
+  },
+  amenities: {
+    type: [String],
+  },
+  images: {
+    type: [String],
+  },
+  image: {
+    type: String,
+  },
+  isAvailable: {
+    type: Boolean,
+    default: true,
+  },
   isFlagged: {
     type: Boolean,
     default: false,
@@ -31,6 +59,10 @@ const propertySchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  }
 });
 
 module.exports = mongoose.model('Property', propertySchema);

@@ -25,10 +25,43 @@ const Dashboard = () => {
     try {
       const data = await propertyService.getProperties();
       if (data.success) {
-        // Filter properties for the current user if they are an owner
-        // For now, let's show all or just owner's depending on role
-        // As per PRD, "View properties" is general
-        setProperties(data.data);
+        if (data.data.length === 0) {
+          const demoProperties = [
+            {
+              _id: 'demo1',
+              title: 'Luxury Apartment in Downtown',
+              description: 'Beautiful 2 bedroom apartment with city views, modern amenities, and close to everything.',
+              price: 2500,
+              location: 'New York, NY',
+              isFlagged: false,
+              owner: { _id: authService.getCurrentUser()?.user?.id },
+              image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            },
+            {
+              _id: 'demo2',
+              title: 'Cozy Suburban Home',
+              description: 'Spacious 3 bedroom home with a large backyard and garage.',
+              price: 1800,
+              location: 'Austin, TX',
+              isFlagged: false,
+              owner: { _id: authService.getCurrentUser()?.user?.id },
+              image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            },
+            {
+              _id: 'demo3',
+              title: 'Modern Studio',
+              description: 'Newly renovated studio apartment perfect for a single professional.',
+              price: 1200,
+              location: 'Chicago, IL',
+              isFlagged: true,
+              owner: { _id: authService.getCurrentUser()?.user?.id },
+              image: 'https://images.unsplash.com/photo-1502672260266-1c1e525044c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+            }
+          ];
+          setProperties(demoProperties);
+        } else {
+          setProperties(data.data);
+        }
       }
     } catch (err) {
       console.error('Failed to fetch properties', err);
@@ -152,8 +185,12 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 gap-6">
               {properties.map((property) => (
                 <div key={property._id} className="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col md:flex-row hover:shadow-md transition-shadow">
-                  <div className="w-full md:w-48 bg-gray-100 flex items-center justify-center border-r border-gray-100">
-                    <Home className="w-12 h-12 text-gray-300" />
+                  <div className="w-full md:w-48 h-48 md:h-auto bg-gray-100 flex items-center justify-center border-r border-gray-100 shrink-0 overflow-hidden">
+                    {property.image ? (
+                      <img src={property.image} alt={property.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <Home className="w-12 h-12 text-gray-300" />
+                    )}
                   </div>
                   <div className="flex-1 p-6">
                     <div className="flex justify-between items-start mb-2">
