@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { Menu, X, LogOut, Layout } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import authService from '../services/authService';
 import { Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const user = authService.getCurrentUser();
+
+  const handleLogout = () => {
+    authService.logout();
+    navigate('/login');
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,6 +46,24 @@ const Navbar = () => {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center space-x-4">
+            {user ? (
+              <>
+                <Link to="/dashboard" className="text-gray-300 hover:text-white text-sm font-medium transition-colors flex items-center gap-2">
+                  <Layout className="w-4 h-4" /> Dashboard
+                </Link>
+                <button 
+                  onClick={handleLogout}
+                  className="text-gray-300 hover:text-red-400 text-sm font-medium transition-colors flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" /> Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="text-gray-300 hover:text-white text-sm font-medium transition-colors">Login</Link>
+                <button className="btn-primary text-sm py-2 px-5">Explore App</button>
+              </>
+            )}
             <Link to="/login" className="text-gray-300 hover:text-white text-sm font-medium transition-colors">Login</Link>
             <button className="btn-primary text-sm py-2 px-5">Explore App</button>
           </div>
@@ -59,6 +87,22 @@ const Navbar = () => {
           <a href="#features" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Listings</a>
           <a href="#dashboard" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Dashboard</a>
           <div className="pt-4 border-t border-dark-700 flex flex-col space-y-3">
+            {user ? (
+              <>
+                <Link to="/dashboard" className="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium">Dashboard</Link>
+                <button 
+                  onClick={handleLogout}
+                  className="text-left text-gray-300 hover:text-red-400 block px-3 py-2 text-base font-medium"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="text-gray-300 hover:text-white block w-full text-left px-3 py-2 text-base font-medium">Login</Link>
+                <button className="btn-primary w-full text-center">Explore App</button>
+              </>
+            )}
             <Link to="/login" className="text-gray-300 hover:text-white block w-full text-left px-3 py-2 text-base font-medium">Login</Link>
             <button className="btn-primary w-full text-center">Explore App</button>
           </div>

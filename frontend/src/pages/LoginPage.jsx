@@ -1,5 +1,45 @@
 import React, { useState } from 'react';
 import { Shield, CheckCircle, CreditCard, Eye, EyeOff, Lock } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import authService from '../services/authService';
+import { toast } from 'react-hot-toast';
+
+const LoginPage = () => {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('tenant');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({ email: '', password: '' });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (error) setError('');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.email || !formData.password) {
+      setError('Please fill in all fields.');
+      return;
+    }
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const data = await authService.login(formData);
+      if (data.success) {
+        toast.success('Welcome back to TrueRent!');
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Login failed. Please try again.';
+      toast.error(msg);
+      setError(msg);
+    } finally {
+      setIsLoading(false);
+    }
 import { Link } from 'react-router-dom';
 
 const LoginPage = () => {
@@ -122,6 +162,13 @@ const LoginPage = () => {
                   <div className="flex-1 h-px bg-gray-200"></div>
                 </div>
 
+                {error && (
+                  <div className="mb-4 px-3 py-2 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+                    {error}
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-5" noValidate>
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1.5">
@@ -129,10 +176,13 @@ const LoginPage = () => {
                     </label>
                     <input
                       type="email"
+                      name="email"
+                      id="login-email"
                       required
                       placeholder="name@company.com"
                       className="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all text-gray-900"
                       value={formData.email}
+                      onChange={handleChange}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
                   </div>
@@ -144,10 +194,13 @@ const LoginPage = () => {
                     <div className="relative">
                       <input
                         type={showPassword ? 'text' : 'password'}
+                        name="password"
+                        id="login-password"
                         required
                         placeholder="••••••••"
                         className="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none transition-all text-gray-900 pr-10"
                         value={formData.password}
+                        onChange={handleChange}
                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                       />
                       <button
@@ -164,6 +217,7 @@ const LoginPage = () => {
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
+                        id="login-remember"
                         className="w-4 h-4 rounded border-gray-300 text-green-700 focus:ring-green-700"
                       />
                       <span className="text-sm text-gray-600">Remember me</span>
@@ -175,6 +229,7 @@ const LoginPage = () => {
 
                   <button
                     type="submit"
+                    id="login-submit"
                     disabled={isLoading}
                     className="w-full bg-[#166534] hover:bg-green-800 text-white font-medium py-2.5 rounded-lg transition-colors flex items-center justify-center disabled:opacity-70 mt-4"
                   >
@@ -188,6 +243,9 @@ const LoginPage = () => {
 
                 <p className="mt-6 text-center text-sm text-gray-600">
                   Don't have an account?{' '}
+                  <Link to="/signup" className="font-medium text-green-700 hover:text-green-800">
+                    Create Account
+                  </Link>
                   <a href="#" className="font-medium text-green-700 hover:text-green-800">
                     Create Account
                   </a>
