@@ -1,0 +1,49 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Env variables
+.env
+.env.test
+.env.production
+.env.local
+
+# Production build directories
+/frontend/dist/
+/backend/dist/
+/dist/
+/build/
+
+# Next.js build output
+.next/
+out/
+
+# IDE & Editor folders
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+
+# Misc
+coverage/
+.nyc_output/
+*.pem

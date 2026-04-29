@@ -220,8 +220,3 @@ export const resetPassword = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
-
-// Google OAuth callback hander
-export const googleCallback = (req, res) => {
-  sendTokenResponse(req.user, 200, res);
-};

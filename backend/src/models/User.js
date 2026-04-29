@@ -17,14 +17,7 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: function() {
-        // Password is not required if user signed up with Google
-        return !this.googleId;
-      },
-    },
-    googleId: {
-      type: String,
-      sparse: true, // Allows multiple nulls but unique values
+      required: true,
     },
     isVerified: {
       type: Boolean,

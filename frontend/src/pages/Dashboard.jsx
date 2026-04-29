@@ -64,7 +64,7 @@ const Dashboard = () => {
               <li className="flex items-center justify-between">
                 <span className="text-gray-400 text-sm">Auth Method</span>
                 <span className="bg-dark-700 px-2 py-1 rounded text-xs text-white">
-                  {user?.googleId ? 'Google OAuth' : 'Password'}
+                  Password
                 </span>
               </li>
               <li className="flex items-center justify-between">

@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
-import passport from 'passport';
 import { rateLimit } from 'express-rate-limit';
 import connectDB from './config/db.js';
 
@@ -14,9 +13,6 @@ dotenv.config();
 connectDB();
 
 const app = express();
-
-// Passport config
-import './config/passport.js';
 
 // Security middleware
 app.use(helmet());
@@ -44,9 +40,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // Cookie parser
 app.use(cookieParser());
-
-// Passport middleware
-app.use(passport.initialize());
 
 // Routes
 import authRoutes from './routes/auth.js';
