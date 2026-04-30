@@ -150,14 +150,14 @@ const Dashboard = () => {
             <Home className="w-5 h-5" />
             My Listings
           </Link>
-          <a href="#" className="flex items-center gap-3 px-4 py-2.5 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
+          <Link to="/fraud-reports" className="flex items-center gap-3 px-4 py-2.5 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
             <AlertCircle className="w-5 h-5" />
             Fraud Reports
-          </a>
-          <a href="#" className="flex items-center gap-3 px-4 py-2.5 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
+          </Link>
+          <Link to="/profile" className="flex items-center gap-3 px-4 py-2.5 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
             <User className="w-5 h-5" />
             Profile
-          </a>
+          </Link>
         </nav>
 
         <div className="p-4 border-t border-gray-100">

@@ -12,6 +12,8 @@ import SignupPage from './pages/SignupPage';
 import Dashboard from './pages/Dashboard';
 import MyListings from './pages/MyListings';
 import AddProperty from './pages/AddProperty';
+import FraudReports from './pages/FraudReports';
+import Profile from './pages/Profile';
 import PrivateRoute from './components/PrivateRoute';
 import { Toaster } from 'react-hot-toast';
 
@@ -67,6 +69,22 @@ function App() {
           element={
             <PrivateRoute>
               <MyListings />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/fraud-reports" 
+          element={
+            <PrivateRoute>
+              <FraudReports />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/profile" 
+          element={
+            <PrivateRoute>
+              <Profile />
             </PrivateRoute>
           } 
         />

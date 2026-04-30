@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, LogOut, Layout } from 'lucide-react';
+import { Menu, X, LogOut, Layout, User, ShieldAlert } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 
@@ -49,6 +49,12 @@ const Navbar = () => {
                 <Link to="/dashboard" className="text-gray-300 hover:text-white text-sm font-medium transition-colors flex items-center gap-2">
                   <Layout className="w-4 h-4" /> Dashboard
                 </Link>
+                <Link to="/fraud-reports" className="text-gray-300 hover:text-white text-sm font-medium transition-colors flex items-center gap-2">
+                  <ShieldAlert className="w-4 h-4" /> Fraud Reports
+                </Link>
+                <Link to="/profile" className="text-gray-300 hover:text-white text-sm font-medium transition-colors flex items-center gap-2">
+                  <User className="w-4 h-4" /> Profile
+                </Link>
                 <button 
                   onClick={handleLogout}
                   className="text-gray-300 hover:text-red-400 text-sm font-medium transition-colors flex items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl"
@@ -86,6 +92,8 @@ const Navbar = () => {
             {user ? (
               <>
                 <Link to="/dashboard" className="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium">Dashboard</Link>
+                <Link to="/fraud-reports" className="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium">Fraud Reports</Link>
+                <Link to="/profile" className="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium">Profile</Link>
                 <button 
                   onClick={handleLogout}
                   className="text-left text-red-400 hover:bg-red-500/10 rounded-lg block px-3 py-2 text-base font-medium transition-colors"
