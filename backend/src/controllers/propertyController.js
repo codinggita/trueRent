@@ -1,4 +1,5 @@
 const Property = require('../models/Property');
+const { calculateRiskScore } = require('../utils/fraudScorer');
 
 // @desc    Get all properties
 // @route   GET /api/properties
@@ -44,18 +45,28 @@ exports.getProperty = async (req, res) => {
 // @access  Private
 exports.createProperty = async (req, res) => {
   try {
-    // Add user to req.body
     req.body.owner = req.user.id;
 
-    // Basic Fraud Detection Logic
-    const { price, description } = req.body;
-    if (price < 5000 || !description || description.length < 20) {
-      req.body.isFlagged = true;
-    } else {
-      req.body.isFlagged = false;
-    }
+    // AI Fraud Risk Scoring
+    const riskAnalysis = calculateRiskScore(req.body);
+    req.body.fraudScore = riskAnalysis.score;
+    req.body.riskLevel = riskAnalysis.level;
+    req.body.riskReasons = riskAnalysis.reasons;
+    req.body.isFlagged = riskAnalysis.level !== 'low';
 
     const property = await Property.create(req.body);
+
+    // Emit Real-time Alert if High Risk
+    if (riskAnalysis.level === 'high') {
+      const io = req.app.get('io');
+      io.emit('high_risk_alert', {
+        message: 'High-risk listing detected!',
+        propertyId: property._id,
+        title: property.title,
+        score: property.fraudScore
+      });
+    }
+
     res.status(201).json({ success: true, data: property });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -74,27 +85,33 @@ exports.updateProperty = async (req, res) => {
     }
 
     // Make sure user is property owner
-    if (property.owner.toString() !== req.user.id && req.user.role !== 'owner') {
+    if (property.owner.toString() !== req.user.id) {
       return res.status(401).json({ success: false, message: 'Not authorized to update this property' });
     }
 
-    // Re-evaluate Fraud Detection on Update
-    const { price, description } = req.body;
-    if (price !== undefined || description !== undefined) {
-      const checkPrice = price !== undefined ? price : property.price;
-      const checkDesc = description !== undefined ? description : property.description;
-
-      if (checkPrice < 5000 || !checkDesc || checkDesc.length < 20) {
-        req.body.isFlagged = true;
-      } else {
-        req.body.isFlagged = false;
-      }
-    }
+    // AI Fraud Risk Re-evaluation
+    const mergedData = { ...property.toObject(), ...req.body };
+    const riskAnalysis = calculateRiskScore(mergedData);
+    req.body.fraudScore = riskAnalysis.score;
+    req.body.riskLevel = riskAnalysis.level;
+    req.body.riskReasons = riskAnalysis.reasons;
+    req.body.isFlagged = riskAnalysis.level !== 'low';
 
     property = await Property.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     });
+
+    // Emit Alert on Re-evaluation if now High Risk
+    if (riskAnalysis.level === 'high') {
+      const io = req.app.get('io');
+      io.emit('high_risk_alert', {
+        message: 'A listing has been updated and flagged as High-risk!',
+        propertyId: property._id,
+        title: property.title,
+        score: property.fraudScore
+      });
+    }
 
     res.status(200).json({ success: true, data: property });
   } catch (error) {
@@ -114,7 +131,7 @@ exports.deleteProperty = async (req, res) => {
     }
 
     // Make sure user is property owner
-    if (property.owner.toString() !== req.user.id && req.user.role !== 'owner') {
+    if (property.owner.toString() !== req.user.id) {
       return res.status(401).json({ success: false, message: 'Not authorized to delete this property' });
     }
 

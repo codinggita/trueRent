@@ -55,6 +55,19 @@ const propertySchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  fraudScore: {
+    type: Number,
+    default: 0,
+  },
+  riskLevel: {
+    type: String,
+    enum: ['low', 'medium', 'high'],
+    default: 'low',
+  },
+  riskReasons: {
+    type: [String],
+    default: [],
+  },
   createdAt: {
     type: Date,
     default: Date.now,
