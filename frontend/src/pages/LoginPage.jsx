@@ -31,7 +31,11 @@ const LoginPage = () => {
       const data = await authService.login(formData);
       if (data.success) {
         toast.success('Welcome back to TrueRent!');
-        navigate('/dashboard');
+        if (data.user.role === 'tenant') {
+          navigate('/tenant-dashboard');
+        } else {
+          navigate('/dashboard');
+        }
       }
     } catch (err) {
       const msg = err.response?.data?.message || 'Login failed. Please try again.';

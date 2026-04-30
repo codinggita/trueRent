@@ -8,6 +8,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const user = authService.getCurrentUser();
+  const dashboardLink = user?.user?.role === 'tenant' ? '/tenant-dashboard' : '/dashboard';
 
   const handleLogout = () => {
     authService.logout();
@@ -39,14 +40,14 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-8">
             <a href="#home" className="text-gray-300 hover:text-white transition-colors text-sm font-medium">Home</a>
             <a href="#features" className="text-gray-300 hover:text-white transition-colors text-sm font-medium">Listings</a>
-            <a href="#dashboard" className="text-gray-300 hover:text-white transition-colors text-sm font-medium">Dashboard</a>
+            <Link to={dashboardLink} className="text-gray-300 hover:text-white transition-colors text-sm font-medium">Dashboard</Link>
           </div>
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center space-x-4">
             {user ? (
               <>
-                <Link to="/dashboard" className="text-gray-300 hover:text-white text-sm font-medium transition-colors flex items-center gap-2">
+                <Link to={dashboardLink} className="text-gray-300 hover:text-white text-sm font-medium transition-colors flex items-center gap-2">
                   <Layout className="w-4 h-4" /> Dashboard
                 </Link>
                 <Link to="/fraud-reports" className="text-gray-300 hover:text-white text-sm font-medium transition-colors flex items-center gap-2">
@@ -87,11 +88,11 @@ const Navbar = () => {
         <div className="md:hidden glass-nav absolute top-full left-0 w-full border-t border-dark-700 p-4 flex flex-col space-y-4">
           <a href="#home" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
           <a href="#features" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Listings</a>
-          <a href="#dashboard" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Dashboard</a>
+          <Link to={dashboardLink} className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Dashboard</Link>
           <div className="pt-4 border-t border-dark-700 flex flex-col space-y-3">
             {user ? (
               <>
-                <Link to="/dashboard" className="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium">Dashboard</Link>
+                <Link to={dashboardLink} className="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium">Dashboard</Link>
                 <Link to="/fraud-reports" className="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium">Fraud Reports</Link>
                 <Link to="/profile" className="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium">Profile</Link>
                 <button 
