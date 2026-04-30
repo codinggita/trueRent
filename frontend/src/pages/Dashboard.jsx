@@ -13,6 +13,12 @@ const Dashboard = () => {
   const queryClient = useQueryClient();
   const user = authService.getCurrentUser()?.user;
 
+  React.useEffect(() => {
+    if (user?.role === 'tenant') {
+      navigate('/tenant-dashboard');
+    }
+  }, [user, navigate]);
+
   // Initialize Real-time alerts
   useSocket();
 

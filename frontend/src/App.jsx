@@ -14,6 +14,7 @@ import MyListings from './pages/MyListings';
 import AddProperty from './pages/AddProperty';
 import FraudReports from './pages/FraudReports';
 import Profile from './pages/Profile';
+import TenantDashboard from './pages/TenantDashboard';
 import PrivateRoute from './components/PrivateRoute';
 import { Toaster } from 'react-hot-toast';
 
@@ -53,6 +54,14 @@ function App() {
           element={
             <PrivateRoute>
               <Dashboard />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/tenant-dashboard" 
+          element={
+            <PrivateRoute>
+              <TenantDashboard />
             </PrivateRoute>
           } 
         />
