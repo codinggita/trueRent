@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Shield, ArrowLeft, Home, MapPin, DollarSign, FileText, CheckCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import propertyService from '../services/propertyService';
-import authService from '../services/authService';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createProperty } from '../services/api';
 import { toast } from 'react-hot-toast';
 
 const AddProperty = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const queryClient = useQueryClient();
   const [form, setForm] = useState({
     title: '',
     location: '',
@@ -16,41 +15,38 @@ const AddProperty = () => {
     description: ''
   });
 
+  const mutation = useMutation({
+    mutationFn: (data) => createProperty(data),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      queryClient.invalidateQueries({ queryKey: ['analytics'] });
+      
+      const analysis = res.data;
+      if (analysis.riskLevel === 'low') {
+        toast.success('Listing published! AI Scan: Safe Listing.');
+      } else {
+        toast.error(`Published with warnings: AI flagged as ${analysis.riskLevel} risk.`);
+      }
+      navigate('/dashboard');
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Failed to create listing.');
+    }
+  });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(`handleChange called with name: ${name}, value: ${value}`);
-    setForm((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-    if (error) setError('');
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
-
-    try {
-      const user = authService.getCurrentUser();
-      const propertyData = {
-        title: form.title,
-        description: form.description,
-        price: form.rent,
-        location: form.location,
-      };
-      const data = await propertyService.createProperty(propertyData, user.token);
-      if (data.success) {
-        toast.success('Listing published successfully!');
-        navigate('/dashboard');
-      }
-    } catch (err) {
-      const msg = err.response?.data?.message || 'Failed to create listing.';
-      toast.error(msg);
-      setError(msg);
-    } finally {
-      setIsLoading(false);
-    }
+    mutation.mutate({
+      title: form.title,
+      description: form.description,
+      price: Number(form.rent),
+      location: form.location,
+    });
   };
 
   return (
@@ -71,23 +67,14 @@ const AddProperty = () => {
         <div className="max-w-2xl w-full">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Add New Property</h1>
-            <p className="text-gray-500">Provide accurate details for institutional verification.</p>
+            <p className="text-gray-500">Provide accurate details for institutional AI verification.</p>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 overflow-hidden">
             <div className="p-6 sm:p-8">
-              {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm flex items-center gap-2">
-                  <Shield className="w-5 h-5 shrink-0" /> {error}
-                </div>
-              )}
-
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Title */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Property Title
-                  </label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Property Title</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                       <Home className="h-5 w-5 text-gray-400" />
@@ -104,11 +91,8 @@ const AddProperty = () => {
                   </div>
                 </div>
 
-                {/* Location */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Location
-                  </label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Location</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                       <MapPin className="h-5 w-5 text-gray-400" />
@@ -125,11 +109,8 @@ const AddProperty = () => {
                   </div>
                 </div>
 
-                {/* Price */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Monthly Rent (INR)
-                  </label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Monthly Rent (INR)</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                       <DollarSign className="h-5 w-5 text-gray-400" />
@@ -146,11 +127,8 @@ const AddProperty = () => {
                   </div>
                 </div>
 
-                {/* Description */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Detailed Description
-                  </label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Detailed Description</label>
                   <div className="relative">
                     <div className="absolute top-3 left-3.5 flex items-start pointer-events-none">
                       <FileText className="h-5 w-5 text-gray-400" />
@@ -159,7 +137,7 @@ const AddProperty = () => {
                       name="description"
                       rows="4"
                       required
-                      placeholder="Describe the property amenities, nearby landmarks, and rules..."
+                      placeholder="Describe the property amenities..."
                       className="block w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200"
                       value={form.description}
                       onChange={handleChange}
@@ -170,15 +148,15 @@ const AddProperty = () => {
                 <div className="pt-4">
                   <button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={mutation.isPending}
                     className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3.5 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-70 shadow-sm hover:shadow-md hover:-translate-y-0.5"
                   >
-                    {isLoading ? (
+                    {mutation.isPending ? (
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                     ) : (
                       <>
                         <CheckCircle className="w-5 h-5" />
-                        Publish Listing
+                        Publish & AI Scan
                       </>
                     )}
                   </button>
@@ -186,13 +164,8 @@ const AddProperty = () => {
               </form>
             </div>
             
-            <div className="bg-emerald-50/50 border-t border-emerald-100 p-6">
-              <div className="flex gap-3">
-                <Shield className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-                <p className="text-xs text-gray-500 leading-relaxed">
-                  By listing your property, you agree to TrueRent's verification process. Our AI will audit your listing for accuracy and security compliance.
-                </p>
-              </div>
+            <div className="bg-emerald-50/50 border-t border-emerald-100 p-6 text-center">
+               <p className="text-xs text-emerald-800 font-medium">TrueRent AI scans every listing to protect tenants from rental fraud.</p>
             </div>
           </div>
         </div>

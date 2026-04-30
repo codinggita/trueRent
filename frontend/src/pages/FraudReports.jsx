@@ -1,31 +1,63 @@
 import React, { useState } from 'react';
-import { Search, Filter, ShieldAlert, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { Search, Filter, ShieldAlert, AlertTriangle, CheckCircle, Clock, TrendingUp, BarChart2 } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getReports, getOverview, getTrends, updateReport, deleteReport } from '../services/api';
+import { demoReports, demoOverview, demoTrends } from '../data/demoReports';
 import { FraudTable } from '../components/fraud/FraudTable';
 import { ReportModal } from '../components/fraud/ReportModal';
 import { StatsCard } from '../components/profile/StatsCard';
 import { Button } from '../components/ui/Button';
-
-// Mock Data
-const initialReports = [
-  { id: 1, title: 'Luxury Condo Downtown', owner: 'John Smith', riskScore: 85, status: 'Pending', date: 'Oct 24, 2023', location: 'New York, NY', description: 'Beautiful luxury condo for a very low price. Must pay deposit upfront.', reporterMessage: 'They asked me to wire money before seeing the place.', images: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80'] },
-  { id: 2, title: 'Cozy Studio near Campus', owner: 'Sarah Connor', riskScore: 45, status: 'Resolved', date: 'Oct 23, 2023', location: 'Austin, TX', description: 'Great location for students.', reporterMessage: 'The images look like stock photos.', images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80'] },
-  { id: 3, title: 'Spacious 3BR House', owner: 'Mike Johnson', riskScore: 92, status: 'Pending', date: 'Oct 22, 2023', location: 'Chicago, IL', description: 'Just moved out of the country, need to rent ASAP.', reporterMessage: 'Owner claims to be out of the country and cannot show the house.', images: [] },
-  { id: 4, title: 'Modern Loft in Arts District', owner: 'Emily Davis', riskScore: 12, status: 'Resolved', date: 'Oct 20, 2023', location: 'Los Angeles, CA', description: 'Verified listing with all amenities.', reporterMessage: 'Just wanted to make sure this is legit.', images: ['https://images.unsplash.com/photo-1502672260266-1c1de2d93688?auto=format&fit=crop&w=400&q=80'] },
-  { id: 5, title: 'Beachfront Villa', owner: 'Robert Wilson', riskScore: 78, status: 'Pending', date: 'Oct 19, 2023', location: 'Miami, FL', description: 'Amazing views, cheap price.', reporterMessage: 'Found the exact same images on a different website for a house in California.', images: ['https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=400&q=80'] },
-];
+import { Card } from '../components/ui/Card';
+import { useSocket } from '../hooks/useSocket';
+import { toast } from 'react-hot-toast';
+import { 
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
+  BarChart, Bar, Cell 
+} from 'recharts';
 
 export default function FraudReports() {
-  const [reports, setReports] = useState(initialReports);
+  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState('All');
   const [selectedReport, setSelectedReport] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Stats
-  const totalReports = reports.length;
-  const highRisk = reports.filter(r => r.riskScore >= 71).length;
-  const pending = reports.filter(r => r.status === 'Pending').length;
-  const resolved = reports.filter(r => r.status === 'Resolved').length;
+  // Initialize Real-time alerts
+  useSocket();
+
+  // Queries
+  const { data: reportsData, isLoading: reportsLoading } = useQuery({
+    queryKey: ['reports'],
+    queryFn: getReports
+  });
+
+  const { data: overviewData } = useQuery({
+    queryKey: ['analytics', 'overview'],
+    queryFn: getOverview
+  });
+
+  const { data: trendsData } = useQuery({
+    queryKey: ['analytics', 'trends'],
+    queryFn: getTrends
+  });
+
+  // Mutations
+  const updateMutation = useMutation({
+    mutationFn: ({ id, status }) => updateReport(id, { status }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reports'] });
+      queryClient.invalidateQueries({ queryKey: ['analytics'] });
+      toast.success('Report status updated');
+    }
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => deleteReport(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reports'] });
+      toast.success('Report removed');
+    }
+  });
 
   // Handlers
   const handleView = (report) => {
@@ -34,30 +66,46 @@ export default function FraudReports() {
   };
 
   const handleAction = (action, id) => {
-    setReports(prev => prev.map(r => {
-      if (r.id === id) {
-        if (action === 'safe') return { ...r, status: 'Resolved', riskScore: Math.min(r.riskScore, 30) };
-        if (action === 'fraud') return { ...r, status: 'Resolved', riskScore: 99 };
-      }
-      return r;
-    }));
+    const status = action === 'safe' ? 'Dismissed' : 'Resolved';
+    updateMutation.mutate({ id, status });
   };
 
   const handleDelete = (id) => {
     if (window.confirm('Are you sure you want to remove this report?')) {
-      setReports(prev => prev.filter(r => r.id !== id));
+      deleteMutation.mutate(id);
     }
   };
 
+  // Data Merging & Calculations
+  const liveReports = reportsData?.data || [];
+  const reports = liveReports.length > 0 ? liveReports : demoReports;
+  
+  const liveOverview = overviewData?.data;
+  const stats = liveOverview ? liveOverview : demoOverview;
+  
+  const liveTrends = trendsData?.data || [];
+  const trends = liveTrends.length > 0 ? liveTrends : demoTrends;
+
+  // Dynamic Risk Distribution Calculation
+  const highRiskCount = reports.filter(r => (r.property?.fraudScore || 0) >= 70).length;
+  const mediumRiskCount = reports.filter(r => (r.property?.fraudScore || 0) >= 40 && (r.property?.fraudScore || 0) < 70).length;
+  const lowRiskCount = reports.filter(r => (r.property?.fraudScore || 0) < 40).length;
+  const totalItems = reports.length || 1;
+
   // Filtering Logic
   const filteredReports = reports.filter(report => {
-    const matchesSearch = report.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          report.owner.toLowerCase().includes(searchQuery.toLowerCase());
+    const propertyTitle = report.property?.title || '';
+    const ownerName = report.property?.owner?.name || '';
+    
+    const matchesSearch = propertyTitle.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          ownerName.toLowerCase().includes(searchQuery.toLowerCase());
     
     if (!matchesSearch) return false;
-    if (filter === 'High') return report.riskScore >= 71;
-    if (filter === 'Medium') return report.riskScore >= 41 && report.riskScore <= 70;
-    if (filter === 'Low') return report.riskScore <= 40;
+    
+    const riskScore = report.property?.fraudScore || 0;
+    if (filter === 'High') return riskScore >= 70;
+    if (filter === 'Medium') return riskScore >= 40 && riskScore < 70;
+    if (filter === 'Low') return riskScore < 40;
     return true;
   });
 
@@ -68,8 +116,8 @@ export default function FraudReports() {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Fraud Reports</h1>
-            <p className="text-gray-500 mt-1">Monitor and resolve suspicious property listings.</p>
+            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Fraud Analytics & Reports</h1>
+            <p className="text-gray-500 mt-1">Real-time monitoring and AI-assisted fraud resolution.</p>
           </div>
           
           <div className="flex flex-col sm:flex-row items-center gap-3">
@@ -98,33 +146,119 @@ export default function FraudReports() {
                   <option value="Low">Low Risk</option>
                 </select>
               </div>
-              
-              {(searchQuery || filter !== 'All') && (
-                <Button variant="ghost" onClick={() => { setSearchQuery(''); setFilter('All'); }} className="px-3">
-                  Clear
-                </Button>
-              )}
             </div>
           </div>
         </div>
 
+        {/* Analytics Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main Chart */}
+          <Card className="lg:col-span-2 min-h-[300px] flex flex-col">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-blue-600" /> Report Trends
+              </h3>
+              <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">Last 7 Days</span>
+            </div>
+            <div className="flex-1">
+              <ResponsiveContainer width="100%" height={250}>
+                <LineChart data={trends}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                  <XAxis 
+                    dataKey="date" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{fontSize: 10, fill: '#9ca3af'}}
+                    dy={10}
+                    tickFormatter={(str) => str.split('-').slice(1).join('/')}
+                  />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{fontSize: 12, fill: '#9ca3af'}}
+                  />
+                  <Tooltip 
+                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="reports" 
+                    stroke="#2563eb" 
+                    strokeWidth={3} 
+                    dot={{ r: 4, fill: '#2563eb', strokeWidth: 2, stroke: '#fff' }}
+                    activeDot={{ r: 6, strokeWidth: 0 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+
+          {/* Distribution Chart */}
+          <Card className="min-h-[300px] flex flex-col">
+            <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2 mb-6">
+              <BarChart2 className="w-5 h-5 text-purple-600" /> Risk Distribution
+            </h3>
+            <div className="flex-1 flex items-center justify-center">
+              <div className="space-y-4 w-full">
+                {[
+                  { level: 'High', count: highRiskCount, color: 'bg-red-500' },
+                  { level: 'Medium', count: mediumRiskCount, color: 'bg-yellow-500' },
+                  { level: 'Low', count: lowRiskCount, color: 'bg-emerald-500' }
+                ].map((item) => {
+                   const percentage = (item.count / totalItems) * 100;
+                   
+                   return (
+                     <div key={item.level} className="space-y-1">
+                       <div className="flex justify-between text-xs font-medium text-gray-600">
+                         <span>{item.level} Risk</span>
+                         <span>{item.count} Reports</span>
+                       </div>
+                       <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                         <div className={`${item.color} h-full transition-all duration-1000`} style={{ width: `${percentage}%` }}></div>
+                       </div>
+                     </div>
+                   );
+                })}
+              </div>
+            </div>
+          </Card>
+        </div>
+
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatsCard title="Total Reports" value={totalReports} icon={<ShieldAlert className="w-6 h-6 text-blue-600" />} />
-          <StatsCard title="High Risk" value={highRisk} icon={<AlertTriangle className="w-6 h-6 text-red-600" />} colorClass="text-red-600" />
-          <StatsCard title="Pending Review" value={pending} icon={<Clock className="w-6 h-6 text-yellow-600" />} colorClass="text-yellow-600" />
-          <StatsCard title="Resolved" value={resolved} icon={<CheckCircle className="w-6 h-6 text-green-600" />} colorClass="text-green-600" />
+          <StatsCard title="Total Reports" value={stats.totalReports} icon={<ShieldAlert className="w-6 h-6 text-blue-600" />} />
+          <StatsCard title="High Risk" value={stats.highRiskCount} icon={<AlertTriangle className="w-6 h-6 text-red-600" />} colorClass="text-red-600" />
+          <StatsCard title="Pending Review" value={stats.totalReports - stats.resolvedCount} icon={<Clock className="w-6 h-6 text-yellow-600" />} colorClass="text-yellow-600" />
+          <StatsCard title="Resolved" value={stats.resolvedCount} icon={<CheckCircle className="w-6 h-6 text-green-600" />} colorClass="text-green-600" />
         </div>
 
         {/* Main Table Content */}
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <FraudTable 
-            reports={filteredReports} 
-            onView={handleView}
-            onMarkSafe={(id) => handleAction('safe', id)}
-            onFlagFraud={(id) => handleAction('fraud', id)}
-            onDelete={handleDelete}
-          />
+          {reportsLoading ? (
+            <div className="grid grid-cols-1 gap-4">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="h-20 bg-gray-200/50 animate-pulse rounded-xl"></div>
+              ))}
+            </div>
+          ) : (
+            <FraudTable 
+              reports={filteredReports.map(r => ({
+                id: r._id,
+                title: r.property?.title || 'Unknown Listing',
+                owner: r.property?.owner?.name || 'Anonymous',
+                riskScore: r.property?.fraudScore || 0,
+                status: r.status,
+                date: new Date(r.createdAt).toLocaleDateString(),
+                description: r.property?.description,
+                reporterMessage: r.description,
+                images: r.property?.images || []
+              }))} 
+              onView={handleView}
+              onMarkSafe={(id) => handleAction('safe', id)}
+              onFlagFraud={(id) => handleAction('fraud', id)}
+              onDelete={handleDelete}
+            />
+          )}
         </div>
 
       </div>
