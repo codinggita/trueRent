@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import Dashboard from './pages/Dashboard';
+import MyListings from './pages/MyListings';
 import AddProperty from './pages/AddProperty';
 import PrivateRoute from './components/PrivateRoute';
 import { Toaster } from 'react-hot-toast';
@@ -61,9 +62,14 @@ function App() {
             </PrivateRoute>
           } 
         />
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route 
+          path="/my-listings" 
+          element={
+            <PrivateRoute>
+              <MyListings />
+            </PrivateRoute>
+          } 
+        />
       </Routes>
     </BrowserRouter>
   );

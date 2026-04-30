@@ -12,6 +12,16 @@ const getProperty = async (id) => {
   return response.data;
 };
 
+const getMyListings = async (token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const response = await axios.get(`${API_URL}/my-listings`, config);
+  return response.data;
+};
+
 const createProperty = async (propertyData, token) => {
   const config = {
     headers: {
@@ -48,6 +58,7 @@ const deleteProperty = async (id, token) => {
 const propertyService = {
   getProperties,
   getProperty,
+  getMyListings,
   createProperty,
   updateProperty,
   deleteProperty,

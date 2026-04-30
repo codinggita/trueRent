@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X, LogOut, Layout } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
-import { Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -53,19 +51,17 @@ const Navbar = () => {
                 </Link>
                 <button 
                   onClick={handleLogout}
-                  className="text-gray-300 hover:text-red-400 text-sm font-medium transition-colors flex items-center gap-2"
+                  className="text-gray-300 hover:text-red-400 text-sm font-medium transition-colors flex items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl"
                 >
                   <LogOut className="w-4 h-4" /> Logout
                 </button>
               </>
             ) : (
               <>
-                <Link to="/login" className="text-gray-300 hover:text-white text-sm font-medium transition-colors">Login</Link>
-                <button className="btn-primary text-sm py-2 px-5">Explore App</button>
+                <Link to="/login" className="text-gray-300 hover:text-white text-sm font-medium transition-colors px-2">Login</Link>
+                <button className="bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 text-sm font-medium py-2.5 px-6 rounded-xl transition-all duration-200 hover:-translate-y-0.5">Explore App</button>
               </>
             )}
-            <Link to="/login" className="text-gray-300 hover:text-white text-sm font-medium transition-colors">Login</Link>
-            <button className="btn-primary text-sm py-2 px-5">Explore App</button>
           </div>
 
           {/* Mobile menu button */}
@@ -92,7 +88,7 @@ const Navbar = () => {
                 <Link to="/dashboard" className="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium">Dashboard</Link>
                 <button 
                   onClick={handleLogout}
-                  className="text-left text-gray-300 hover:text-red-400 block px-3 py-2 text-base font-medium"
+                  className="text-left text-red-400 hover:bg-red-500/10 rounded-lg block px-3 py-2 text-base font-medium transition-colors"
                 >
                   Logout
                 </button>
@@ -100,11 +96,9 @@ const Navbar = () => {
             ) : (
               <>
                 <Link to="/login" className="text-gray-300 hover:text-white block w-full text-left px-3 py-2 text-base font-medium">Login</Link>
-                <button className="btn-primary w-full text-center">Explore App</button>
+                <button className="bg-emerald-500 hover:bg-emerald-600 text-white shadow-md text-base font-medium py-3 px-6 rounded-xl transition-all duration-200 w-full text-center mt-2">Explore App</button>
               </>
             )}
-            <Link to="/login" className="text-gray-300 hover:text-white block w-full text-left px-3 py-2 text-base font-medium">Login</Link>
-            <button className="btn-primary w-full text-center">Explore App</button>
           </div>
         </div>
       )}

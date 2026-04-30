@@ -12,6 +12,18 @@ exports.getProperties = async (req, res) => {
   }
 };
 
+// @desc    Get logged in user's properties
+// @route   GET /api/properties/my-listings
+// @access  Private
+exports.getMyListings = async (req, res) => {
+  try {
+    const properties = await Property.find({ owner: req.user.id }).populate('owner', 'name email');
+    res.status(200).json({ success: true, count: properties.length, data: properties });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // @desc    Get single property
 // @route   GET /api/properties/:id
 // @access  Public
