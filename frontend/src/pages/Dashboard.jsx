@@ -29,33 +29,75 @@ const Dashboard = () => {
           const demoProperties = [
             {
               _id: 'demo1',
-              title: 'Luxury Apartment in Downtown',
-              description: 'Beautiful 2 bedroom apartment with city views, modern amenities, and close to everything.',
-              price: 2500,
-              location: 'New York, NY',
+              title: "Modern 2BHK with Balcony",
+              description: "Spacious 2BHK featuring a private balcony and modular kitchen. Located in a quiet residential area.",
+              price: 45000,
+              location: "Bandra West, Mumbai",
+              propertyType: "Apartment",
+              bedrooms: 2,
+              bathrooms: 2,
+              furnishing: "Semi-Furnished",
+              area: 950,
+              amenities: ["Gym", "Parking", "CCTV", "Garden"],
+              images: [
+                "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
+                "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80"
+              ],
+              image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
+              isAvailable: true,
               isFlagged: false,
               owner: { _id: authService.getCurrentUser()?.user?.id },
-              image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+              createdAt: "2026-04-29T18:10:00.000Z",
+              updatedAt: "2026-04-29T18:10:00.000Z",
+              __v: 0
             },
             {
               _id: 'demo2',
-              title: 'Cozy Suburban Home',
-              description: 'Spacious 3 bedroom home with a large backyard and garage.',
-              price: 1800,
-              location: 'Austin, TX',
+              title: "Luxury Penthouse Suite",
+              description: "High-end penthouse with a sea view. Premium interiors and state-of-the-art smart home features.",
+              price: 120000,
+              location: "Worli, Mumbai",
+              propertyType: "Penthouse",
+              bedrooms: 3,
+              bathrooms: 3,
+              furnishing: "Fully Furnished",
+              area: 1800,
+              amenities: ["Swimming Pool", "Clubhouse", "Intercom", "Power Backup"],
+              images: [
+                "https://images.unsplash.com/photo-1600607687940-47a04b629571?auto=format&fit=crop&w=800&q=80",
+                "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80"
+              ],
+              image: "https://images.unsplash.com/photo-1600607687940-47a04b629571?auto=format&fit=crop&w=800&q=80",
+              isAvailable: true,
               isFlagged: false,
               owner: { _id: authService.getCurrentUser()?.user?.id },
-              image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+              createdAt: "2026-04-29T18:15:20.000Z",
+              updatedAt: "2026-04-29T18:15:20.000Z",
+              __v: 0
             },
             {
               _id: 'demo3',
-              title: 'Modern Studio',
-              description: 'Newly renovated studio apartment perfect for a single professional.',
-              price: 1200,
-              location: 'Chicago, IL',
-              isFlagged: true,
+              title: "Cozy 1RK for Students",
+              description: "Budget-friendly 1RK close to university campus and local markets. Includes gas connection.",
+              price: 12000,
+              location: "Powai, Mumbai",
+              propertyType: "Studio",
+              bedrooms: 0,
+              bathrooms: 1,
+              furnishing: "Unfurnished",
+              area: 350,
+              amenities: ["Water Supply", "Security", "Fire Alarm"],
+              images: [
+                "https://images.unsplash.com/photo-1536376074432-8d63d592bfde?auto=format&fit=crop&w=800&q=80",
+                "https://images.unsplash.com/photo-1505691938895-1758d7eaa511?auto=format&fit=crop&w=800&q=80"
+              ],
+              image: "https://images.unsplash.com/photo-1536376074432-8d63d592bfde?auto=format&fit=crop&w=800&q=80",
+              isAvailable: true,
+              isFlagged: false,
               owner: { _id: authService.getCurrentUser()?.user?.id },
-              image: 'https://images.unsplash.com/photo-1502672260266-1c1e525044c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+              createdAt: "2026-04-29T18:20:45.000Z",
+              updatedAt: "2026-04-29T18:20:45.000Z",
+              __v: 0
             }
           ];
           setProperties(demoProperties);
@@ -100,14 +142,14 @@ const Dashboard = () => {
         </div>
         
         <nav className="flex-1 p-4 space-y-1">
-          <a href="#" className="flex items-center gap-3 px-4 py-2.5 bg-green-50 text-green-700 rounded-lg font-medium">
+          <Link to="/dashboard" className="flex items-center gap-3 px-4 py-2.5 bg-green-50 text-green-700 rounded-lg font-medium">
             <Layout className="w-5 h-5" />
             Dashboard
-          </a>
-          <a href="#" className="flex items-center gap-3 px-4 py-2.5 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
+          </Link>
+          <Link to="/my-listings" className="flex items-center gap-3 px-4 py-2.5 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
             <Home className="w-5 h-5" />
             My Listings
-          </a>
+          </Link>
           <a href="#" className="flex items-center gap-3 px-4 py-2.5 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
             <AlertCircle className="w-5 h-5" />
             Fraud Reports
@@ -153,7 +195,7 @@ const Dashboard = () => {
             </div>
             <Link 
               to="/add-property"
-              className="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all duration-200 shadow-sm hover:shadow-md font-medium"
             >
               <Plus className="w-5 h-5" />
               Add New Listing
@@ -162,17 +204,26 @@ const Dashboard = () => {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-              <p className="text-sm font-medium text-gray-500 mb-1">Total Listings</p>
+            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200">
+              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-4">
+                <Home className="w-6 h-6 text-blue-600" />
+              </div>
+              <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Listings</p>
               <h3 className="text-3xl font-bold text-gray-900">{properties.length}</h3>
             </div>
-            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-              <p className="text-sm font-medium text-gray-500 mb-1">Active Queries</p>
+            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200">
+              <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center mb-4">
+                <Layout className="w-6 h-6 text-purple-600" />
+              </div>
+              <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Active Queries</p>
               <h3 className="text-3xl font-bold text-gray-900">0</h3>
             </div>
-            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm border-l-4 border-l-green-600">
-              <p className="text-sm font-medium text-gray-500 mb-1">Security Status</p>
-              <h3 className="text-xl font-bold text-green-700">All Systems Green</h3>
+            <div className="bg-gradient-to-br from-emerald-500 to-emerald-700 p-6 rounded-2xl border border-emerald-600 shadow-md text-white hover:shadow-lg transition-all duration-200">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4 backdrop-blur-sm">
+                <Shield className="w-6 h-6 text-white" />
+              </div>
+              <p className="text-sm font-semibold text-emerald-100 uppercase tracking-wider mb-1">Security Status</p>
+              <h3 className="text-xl font-bold text-white">All Systems Green</h3>
             </div>
           </div>
 
@@ -184,61 +235,63 @@ const Dashboard = () => {
           ) : properties.length > 0 ? (
             <div className="grid grid-cols-1 gap-6">
               {properties.map((property) => (
-                <div key={property._id} className="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col md:flex-row hover:shadow-md transition-shadow">
-                  <div className="w-full md:w-48 h-48 md:h-auto bg-gray-100 flex items-center justify-center border-r border-gray-100 shrink-0 overflow-hidden">
+                <div key={property._id} className="bg-white border border-gray-100 rounded-2xl overflow-hidden flex flex-col md:flex-row shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                  <div className="w-full md:w-64 h-56 md:h-auto bg-gray-100 flex items-center justify-center shrink-0 overflow-hidden relative">
                     {property.image ? (
-                      <img src={property.image} alt={property.title} className="w-full h-full object-cover" />
+                      <img src={property.image} alt={property.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     ) : (
                       <Home className="w-12 h-12 text-gray-300" />
                     )}
-                  </div>
-                  <div className="flex-1 p-6">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="text-xl font-bold text-gray-900">{property.title}</h4>
-                      <div className="flex gap-2">
-                        {property.isFlagged && (
-                          <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded flex items-center gap-1">
-                            <AlertTriangle className="w-3 h-3" />
-                            Suspicious Listing
-                          </span>
-                        )}
-                        <span className="bg-green-50 text-green-700 text-xs font-bold px-2 py-1 rounded">
-                          Active
+                    <div className="absolute top-3 left-3 flex gap-2">
+                      {property.isFlagged && (
+                        <span className="bg-red-500/90 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5">
+                          <AlertTriangle className="w-3 h-3" />
+                          Suspicious
                         </span>
-                        {user.id === property.owner._id && (
+                      )}
+                      <span className="bg-emerald-500/90 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+                        Active
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex-1 p-6 md:p-8 flex flex-col justify-between">
+                    <div>
+                      <div className="flex justify-between items-start mb-3">
+                        <h4 className="text-xl font-bold text-gray-900 group-hover:text-emerald-700 transition-colors line-clamp-1">{property.title}</h4>
+                        {user.id === property.owner?._id && (
                           <button 
                             onClick={() => handleDelete(property._id)}
-                            className="text-gray-400 hover:text-red-600 transition-colors"
+                            className="p-2.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors shadow-sm bg-white border border-gray-100"
+                            title="Delete Listing"
                           >
-                            <Trash2 className="w-5 h-5" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         )}
                       </div>
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-5">
+                        <span className="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
+                          <MapPin className="w-4 h-4 text-emerald-600" />
+                          {property.location}
+                        </span>
+                        <span className="flex items-center gap-1.5 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100 text-emerald-700 font-medium">
+                          <DollarSign className="w-4 h-4 text-emerald-600" />
+                          {property.price?.toLocaleString() || 'N/A'}/mo
+                        </span>
+                      </div>
+                      <p className="text-gray-600 text-sm line-clamp-2 leading-relaxed">
+                        {property.description}
+                      </p>
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
-                      <span className="flex items-center gap-1">
-                        <MapPin className="w-4 h-4" />
-                        {property.location}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <DollarSign className="w-4 h-4" />
-                        {property.price.toLocaleString()}/mo
-                      </span>
-                    </div>
-                    <p className="text-gray-600 text-sm line-clamp-2">
-                      {property.description}
-                    </p>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            /* Empty State */
-            <div className="bg-white border border-gray-200 rounded-xl p-12 flex flex-col items-center justify-center text-center">
-              <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                <Home className="w-8 h-8 text-gray-300" />
+            <div className="bg-white border border-gray-100 rounded-2xl p-16 flex flex-col items-center justify-center text-center shadow-sm">
+              <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6">
+                <Home className="w-10 h-10 text-gray-300" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-1">No listings found</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">No listings found</h3>
               <p className="text-gray-500 max-w-sm">
                 You haven't added any property listings yet. Start by adding your first listing to the TrueRent network.
               </p>
