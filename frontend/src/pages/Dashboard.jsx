@@ -59,152 +59,102 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout title="Platform Overview">
-      <div className="space-y-8">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all">
-            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-4">
-              <Home className="w-6 h-6 text-blue-600" />
+      <div className="space-y-10">
+        {/* Stats Section */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            { label: 'Total Listings', value: totalListings, icon: <Home className="w-6 h-6" />, color: 'blue' },
+            { label: 'Active', value: activeListings, icon: <CheckCircle2 className="w-6 h-6" />, color: 'emerald' },
+            { label: 'AI Flagged', value: flaggedListings, icon: <AlertTriangle className="w-6 h-6" />, color: 'red' },
+            { label: 'Total Views', value: totalViews, icon: <Eye className="w-6 h-6" />, color: 'purple' },
+          ].map((stat, i) => (
+            <div key={i} className="bg-white p-6 rounded-[32px] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 group">
+              <div className={`w-14 h-14 bg-${stat.color}-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                {React.cloneElement(stat.icon, { className: `w-7 h-7 text-${stat.color}-600` })}
+              </div>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">{stat.label}</p>
+              <h3 className="text-4xl font-black text-gray-900">{stat.value}</h3>
             </div>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total Listings</p>
-            <h3 className="text-3xl font-bold text-gray-900">{totalListings}</h3>
-          </div>
-          
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all">
-            <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center mb-4">
-              <CheckCircle2 className="w-6 h-6 text-emerald-600" />
-            </div>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Active</p>
-            <h3 className="text-3xl font-bold text-gray-900">{activeListings}</h3>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all">
-            <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center mb-4">
-              <AlertTriangle className="w-6 h-6 text-red-600" />
-            </div>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Flagged</p>
-            <h3 className="text-3xl font-bold text-gray-900">{flaggedListings}</h3>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all">
-            <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center mb-4">
-              <Shield className="w-6 h-6 text-emerald-600" />
-            </div>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Verified</p>
-            <h3 className="text-3xl font-bold text-gray-900">{verifiedListings}</h3>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all">
-            <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center mb-4">
-              <Eye className="w-6 h-6 text-purple-600" />
-            </div>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Views</p>
-            <h3 className="text-3xl font-bold text-gray-900">{totalViews}</h3>
-          </div>
+          ))}
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Link to="/add-property" className="flex items-center gap-4 p-6 bg-emerald-600 rounded-2xl text-white hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-900/20 group">
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform">
-              <Plus className="w-6 h-6" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <Link to="/add-property" className="relative overflow-hidden flex items-center gap-6 p-8 bg-gray-900 rounded-[32px] text-white hover:bg-emerald-600 transition-all duration-500 shadow-2xl group">
+            <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md group-hover:scale-110 transition-transform">
+              <Plus className="w-8 h-8" />
             </div>
             <div>
-              <h4 className="font-bold text-lg">Add New Property</h4>
-              <p className="text-emerald-100 text-sm">List a new apartment or villa for AI scanning.</p>
+              <h4 className="font-bold text-xl mb-1">Add New Property</h4>
+              <p className="text-white/60 text-sm">List a new apartment or villa for AI scanning.</p>
             </div>
+            <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all"></div>
           </Link>
 
-          <Link to="/fraud-reports" className="flex items-center gap-4 p-6 bg-white border border-gray-100 rounded-2xl hover:border-emerald-200 transition-all shadow-sm hover:shadow-md group">
-            <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <FileText className="w-6 h-6 text-emerald-600" />
+          <Link to="/fraud-reports" className="flex items-center gap-6 p-8 bg-white border border-gray-100 rounded-[32px] hover:border-emerald-300 transition-all duration-500 shadow-sm hover:shadow-xl group">
+            <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <FileText className="w-8 h-8 text-emerald-600" />
             </div>
             <div>
-              <h4 className="font-bold text-lg text-gray-900">View Fraud Reports</h4>
-              <p className="text-gray-500 text-sm">Check flagged activity and platform safety trends.</p>
+              <h4 className="font-bold text-xl text-gray-900 mb-1">Fraud Reports</h4>
+              <p className="text-gray-500 text-sm">Check flagged activity and safety trends.</p>
             </div>
           </Link>
         </div>
 
         <div className="space-y-6">
-          <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-             <TrendingUp className="w-5 h-5 text-emerald-600" /> Your Property Listings
-          </h3>
+          <div className="flex items-center justify-between">
+            <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+               <TrendingUp className="w-6 h-6 text-emerald-600" /> Recent Listings
+            </h3>
+            <Link to="/my-listings" className="text-sm font-bold text-emerald-600 hover:text-emerald-800 transition-colors">View All →</Link>
+          </div>
           
           {loading ? (
-            <div className="grid grid-cols-1 gap-6">
-              {[1, 2, 3].map(i => <div key={i} className="h-48 bg-gray-200/50 animate-pulse rounded-2xl"></div>)}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3].map(i => <div key={i} className="h-64 bg-gray-100 animate-pulse rounded-[32px]"></div>)}
             </div>
           ) : properties.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6">
-              {properties.map((property) => (
-                <div key={property._id} className="bg-white border border-gray-100 rounded-2xl overflow-hidden flex flex-col md:flex-row shadow-sm hover:shadow-xl transition-all group border-l-4 border-l-transparent hover:border-l-emerald-500">
-                  <div className="w-full md:w-72 h-52 md:h-auto bg-gray-100 relative shrink-0">
-                    {property.image || property.images?.[0] ? (
-                      <img src={property.image || property.images?.[0]} alt={property.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-300">
-                         <Home className="w-12 h-12" />
-                      </div>
-                    )}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {properties.slice(0, 3).map((property) => (
+                <div key={property._id} className="bg-white border border-gray-100 rounded-[32px] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group">
+                  <div className="relative h-52 overflow-hidden">
+                    <img 
+                      src={property.image || property.images?.[0] || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80'} 
+                      alt={property.title} 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                    />
                     <div className="absolute top-4 left-4">
                        <RiskBadge score={property.fraudScore || 0} />
                     </div>
                   </div>
-                  <div className="flex-1 p-6 md:p-8 flex flex-col justify-between">
-                    <div>
-                      <div className="flex justify-between items-start mb-4">
-                        <div>
-                           <h4 className="text-xl font-bold text-gray-900 group-hover:text-emerald-700 transition-colors line-clamp-1">{property.title}</h4>
-                           <p className="text-sm text-gray-500 mt-1 flex items-center gap-1.5">
-                              <MapPin className="w-4 h-4 text-emerald-600" /> {property.location}
-                           </p>
-                        </div>
-                        {user.id === property.owner?._id && (
-                          <button 
-                            onClick={() => deleteMutation.mutate(property._id)}
-                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                          >
-                            <Trash2 className="w-5 h-5" />
-                          </button>
-                        )}
-                      </div>
-                      
-                      <div className="flex items-center gap-4 mb-6">
-                         <div className="px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-100 text-sm font-bold">
-                            ₹{property.price?.toLocaleString()}/mo
-                         </div>
-                         <div className="px-3 py-1.5 bg-gray-50 text-gray-600 rounded-lg border border-gray-100 text-sm">
-                            {property.propertyType}
-                         </div>
-                      </div>
-
-                      <p className="text-gray-600 text-sm line-clamp-2 leading-relaxed mb-4">
-                        {property.description}
-                      </p>
-
-                      {property.isFlagged && property.riskReasons?.length > 0 && (
-                        <div className="bg-red-50 p-3 rounded-lg border border-red-100">
-                           <p className="text-xs font-bold text-red-800 flex items-center gap-1.5 mb-1">
-                              <AlertCircle className="w-3.5 h-3.5" /> AI Analysis Flag:
-                           </p>
-                           <p className="text-xs text-red-700 italic">"{property.riskReasons[0]}"</p>
-                        </div>
-                      )}
+                  <div className="p-6">
+                    <h4 className="text-lg font-bold text-gray-900 mb-1 truncate">{property.title}</h4>
+                    <p className="text-xs text-gray-500 flex items-center gap-1.5 mb-4">
+                       <MapPin className="w-3.5 h-3.5 text-emerald-500" /> {property.location}
+                    </p>
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-50">
+                      <div className="text-emerald-600 font-black text-xl">₹{property.price?.toLocaleString()}</div>
+                      <Link to={`/property/${property._id}`} className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all">
+                        <ArrowRight className="w-5 h-5" />
+                      </Link>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="bg-white border border-gray-100 rounded-3xl p-20 flex flex-col items-center justify-center text-center shadow-sm">
+            <div className="bg-white border border-gray-100 rounded-[40px] p-20 flex flex-col items-center justify-center text-center shadow-sm">
               <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6">
                 <Home className="w-10 h-10 text-gray-300" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Market is currently empty</h3>
-              <p className="text-gray-500 max-w-sm">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">No active listings</h3>
+              <p className="text-gray-500 max-w-sm mb-8">
                 Start adding property listings to see the AI fraud detection system in action.
               </p>
+              <Link to="/add-property" className="bg-emerald-600 text-white px-8 py-4 rounded-2xl font-bold hover:bg-emerald-700 transition-all">
+                Create First Listing
+              </Link>
             </div>
           )}
         </div>

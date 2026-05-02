@@ -151,49 +151,78 @@ const MyListings = () => {
         {/* Property List */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-            {[1, 2, 3].map(i => <div key={i} className="h-80 bg-gray-200/50 animate-pulse rounded-2xl"></div>)}
+            {[1, 2, 3].map(i => <div key={i} className="h-80 bg-gray-100 animate-pulse rounded-3xl border border-gray-50"></div>)}
           </div>
         ) : filteredProperties.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {filteredProperties.map((property) => (
-              <div key={property._id} className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group">
-                <div className="relative h-56 bg-gray-100 overflow-hidden">
+              <div key={property._id} className="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group">
+                <div className="relative h-60 bg-gray-50 overflow-hidden">
                   <img 
                     src={property.image || property.images?.[0] || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80'} 
                     alt={property.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                   />
+                  <div className="absolute top-4 left-4 flex gap-2">
+                    {property.isFlagged ? (
+                      <span className="bg-red-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest flex items-center gap-1 shadow-lg shadow-red-500/20">
+                        <AlertCircle className="w-3 h-3" /> Flagged
+                      </span>
+                    ) : (
+                      <span className="bg-emerald-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest flex items-center gap-1 shadow-lg shadow-emerald-500/20">
+                        <Shield className="w-3 h-3" /> Verified
+                      </span>
+                    )}
+                  </div>
                   <div className="absolute top-4 right-4">
                     {!property.isAvailable ? (
-                      <span className="bg-gray-900/90 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest">Rented</span>
+                      <span className="bg-gray-900/80 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest">Rented</span>
                     ) : (
-                      <span className="bg-emerald-500/90 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest">Active</span>
+                      <span className="bg-white/90 backdrop-blur-md text-emerald-600 text-[10px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest border border-emerald-100 shadow-sm">Available</span>
                     )}
                   </div>
                 </div>
 
                 <div className="p-6 flex-1 flex flex-col">
-                  <h4 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-emerald-700 transition-colors line-clamp-1">{property.title}</h4>
-                  <p className="text-xs text-gray-500 flex items-center gap-1.5 mb-4">
-                    <MapPin className="w-3.5 h-3.5 text-emerald-500" /> {property.location}
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="text-xl font-bold text-gray-900 group-hover:text-emerald-600 transition-colors line-clamp-1">{property.title}</h4>
+                  </div>
+                  <p className="text-sm text-gray-500 flex items-center gap-1.5 mb-6">
+                    <MapPin className="w-4 h-4 text-emerald-500" /> {property.location}
                   </p>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-50 mt-auto">
-                    <div className="text-emerald-600 font-extrabold text-lg">₹{property.price?.toLocaleString()}<span className="text-[10px] text-gray-400 font-medium">/mo</span></div>
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="bg-gray-50 p-3 rounded-2xl border border-gray-100">
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Safety Score</p>
+                      <p className={`text-sm font-extrabold ${property.fraudScore > 50 ? 'text-red-500' : 'text-emerald-600'}`}>
+                        {property.fraudScore || 0}% Risk
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded-2xl border border-gray-100">
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Inquiries</p>
+                      <p className="text-sm font-extrabold text-gray-900">12 Active</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-6 border-t border-gray-50 mt-auto">
+                    <div>
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Rent Amount</p>
+                      <div className="text-gray-900 font-extrabold text-2xl">₹{property.price?.toLocaleString()}</div>
+                    </div>
                     <div className="flex gap-2">
                       <button 
                         onClick={() => handleStatusToggle(property)}
-                        className="p-2 bg-gray-50 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
-                        title="Toggle Status"
+                        className={`p-3 rounded-2xl transition-all shadow-sm ${property.isAvailable ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-100' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                        title={property.isAvailable ? 'Mark as Rented' : 'Mark as Available'}
                       >
-                        <Eye className="w-4 h-4" />
+                        <Eye className="w-5 h-5" />
                       </button>
                       <button 
                         onClick={() => handleDelete(property._id)}
-                        className="p-2 bg-gray-50 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                        title="Delete"
+                        className="p-3 bg-red-50 text-red-500 hover:bg-red-100 border border-red-100 rounded-2xl transition-all shadow-sm"
+                        title="Delete Listing"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-5 h-5" />
                       </button>
                     </div>
                   </div>
@@ -202,10 +231,21 @@ const MyListings = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
-            <Home className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-            <h4 className="text-lg font-bold text-gray-900">No listings found</h4>
-            <p className="text-gray-500 text-sm">Try adding a new property to get started.</p>
+          <div className="max-w-2xl mx-auto text-center py-24 px-6 bg-white rounded-[40px] border border-dashed border-gray-200 shadow-sm animate-in fade-in zoom-in-95 duration-500">
+            <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce duration-[3s]">
+              <Home className="w-10 h-10 text-emerald-500" />
+            </div>
+            <h4 className="text-3xl font-extrabold text-gray-900 mb-4">No active listings yet</h4>
+            <p className="text-gray-500 mb-10 text-lg leading-relaxed">
+              Your property portfolio is currently empty. Start by listing your first property and let our AI handle the verification process for you.
+            </p>
+            <Link 
+              to="/add-property"
+              className="inline-flex items-center gap-3 bg-gray-900 hover:bg-emerald-600 text-white px-10 py-5 rounded-[20px] font-bold transition-all shadow-xl shadow-gray-200 hover:shadow-emerald-200 hover:-translate-y-1"
+            >
+              <Plus className="w-6 h-6" />
+              List New Property
+            </Link>
           </div>
         )}
       </div>

@@ -9,7 +9,7 @@ import { DashboardProvider } from '../context/DashboardContext';
 const DashboardLayout = ({ children, title }) => {
   return (
     <DashboardProvider>
-      <div className="min-h-screen bg-gray-50/50 flex">
+      <div className="min-h-screen bg-[#f8fafc] flex">
         {/* Fixed Sidebar */}
         <Sidebar />
 
