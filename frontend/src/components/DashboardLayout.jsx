@@ -4,29 +4,25 @@ import Header from './Header';
 import SettingsDrawer from './SettingsDrawer';
 import ProfileModal from './ProfileModal';
 import QuickViewModal from './QuickViewModal';
-import { DashboardProvider } from '../context/DashboardContext';
-
 const DashboardLayout = ({ children, title }) => {
   return (
-    <DashboardProvider>
-      <div className="min-h-screen bg-gray-50/50 flex">
-        {/* Fixed Sidebar */}
-        <Sidebar />
+    <div className="min-h-screen bg-[#f8fafc] flex">
+      {/* Fixed Sidebar */}
+      <Sidebar />
 
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col md:ml-64 min-h-screen">
-          <Header title={title} />
-          <main className="flex-1 p-6 lg:p-8 animate-in fade-in duration-500">
-            {children}
-          </main>
-        </div>
-
-        {/* Global Overlays */}
-        <SettingsDrawer />
-        <ProfileModal />
-        <QuickViewModal />
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col md:ml-64 min-h-screen">
+        <Header title={title} />
+        <main className="flex-1 p-6 lg:p-8 animate-in fade-in duration-500">
+          {children}
+        </main>
       </div>
-    </DashboardProvider>
+
+      {/* Global Overlays */}
+      <SettingsDrawer />
+      <ProfileModal />
+      <QuickViewModal />
+    </div>
   );
 };
 
