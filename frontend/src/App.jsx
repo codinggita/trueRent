@@ -42,71 +42,75 @@ function LandingPage() {
   );
 }
 
+import { DashboardProvider } from './context/DashboardContext';
+
 function App() {
   return (
     <BrowserRouter>
       <Toaster position="top-right" />
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route 
-          path="/dashboard" 
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          } 
-        />
-        <Route 
-          path="/tenant-dashboard" 
-          element={
-            <PrivateRoute>
-              <TenantDashboard />
-            </PrivateRoute>
-          } 
-        />
-        <Route 
-          path="/add-property" 
-          element={
-            <PrivateRoute>
-              <AddProperty />
-            </PrivateRoute>
-          } 
-        />
-        <Route 
-          path="/my-listings" 
-          element={
-            <PrivateRoute>
-              <MyListings />
-            </PrivateRoute>
-          } 
-        />
-        <Route 
-          path="/fraud-reports" 
-          element={
-            <PrivateRoute>
-              <FraudReports />
-            </PrivateRoute>
-          } 
-        />
-        <Route 
-          path="/profile" 
-          element={
-            <PrivateRoute>
-              <Profile />
-            </PrivateRoute>
-          } 
-        />
-        <Route 
-          path="/property/:id" 
-          element={
-            <PrivateRoute>
-              <PropertyDetails />
-            </PrivateRoute>
-          } 
-        />
-      </Routes>
+      <DashboardProvider>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route 
+            path="/dashboard" 
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/tenant-dashboard" 
+            element={
+              <PrivateRoute>
+                <TenantDashboard />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/add-property" 
+            element={
+              <PrivateRoute>
+                <AddProperty />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/my-listings" 
+            element={
+              <PrivateRoute>
+                <MyListings />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/fraud-reports" 
+            element={
+              <PrivateRoute>
+                <FraudReports />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/profile" 
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/property/:id" 
+            element={
+              <PrivateRoute>
+                <PropertyDetails />
+              </PrivateRoute>
+            } 
+          />
+        </Routes>
+      </DashboardProvider>
     </BrowserRouter>
   );
 }
