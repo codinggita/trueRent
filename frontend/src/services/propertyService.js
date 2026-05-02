@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/properties';
+const API_URL = 'http://localhost:10000/api/properties';
 
 const getProperties = async () => {
   const response = await axios.get(API_URL);

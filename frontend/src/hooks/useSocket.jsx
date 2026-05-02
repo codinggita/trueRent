@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import useStore from '../store/useStore';
 import { toast } from 'react-hot-toast';
 
-const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:10000';
 
 export const useSocket = () => {
   const addAlert = useStore((state) => state.addAlert);
