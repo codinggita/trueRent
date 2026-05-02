@@ -15,6 +15,7 @@ import AddProperty from './pages/AddProperty';
 import FraudReports from './pages/FraudReports';
 import Profile from './pages/Profile';
 import TenantDashboard from './pages/TenantDashboard';
+import PropertyDetails from './pages/PropertyDetails';
 import PrivateRoute from './components/PrivateRoute';
 import { Toaster } from 'react-hot-toast';
 
@@ -94,6 +95,14 @@ function App() {
           element={
             <PrivateRoute>
               <Profile />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/property/:id" 
+          element={
+            <PrivateRoute>
+              <PropertyDetails />
             </PrivateRoute>
           } 
         />

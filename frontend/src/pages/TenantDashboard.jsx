@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, Shield, MapPin, DollarSign, Filter, Star, AlertTriangle, ArrowRight, Home, Zap } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getProperties } from '../services/api';
@@ -10,6 +11,7 @@ import { Button } from '../components/ui/Button';
 import DashboardLayout from '../components/DashboardLayout';
 
 const TenantDashboard = () => {
+  const navigate = useNavigate();
   const user = authService.getCurrentUser()?.user;
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -113,7 +115,10 @@ const TenantDashboard = () => {
                           </div>
                           <span className="text-xs font-bold text-gray-700">{property.owner?.name || 'Verified'}</span>
                         </div>
-                        <button className="bg-gray-900 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-emerald-600 transition-colors flex items-center gap-2 group">
+                        <button
+                          onClick={() => navigate(`/property/${property._id}`)}
+                          className="bg-gray-900 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-emerald-600 transition-colors flex items-center gap-2 group"
+                        >
                           View Details <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                         </button>
                       </div>
