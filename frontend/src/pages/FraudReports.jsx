@@ -15,6 +15,8 @@ import {
   BarChart, Bar, Cell 
 } from 'recharts';
 
+import DashboardLayout from '../components/DashboardLayout';
+
 export default function FraudReports() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
@@ -110,13 +112,13 @@ export default function FraudReports() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50/50 pb-12">
-      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+    <DashboardLayout title="Fraud Analytics">
+      <div className="space-y-8">
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Fraud Analytics & Reports</h1>
+            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Report Feed</h2>
             <p className="text-gray-500 mt-1">Real-time monitoring and AI-assisted fraud resolution.</p>
           </div>
           
@@ -125,67 +127,62 @@ export default function FraudReports() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input 
                 type="text" 
-                placeholder="Search listings or owners..." 
-                className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow outline-none"
+                placeholder="Search listings..." 
+                className="w-full pl-9 pr-4 py-2 border border-gray-100 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-shadow outline-none text-sm bg-white"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             
-            <div className="flex w-full sm:w-auto gap-2">
-              <div className="relative flex-1 sm:flex-none">
-                <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10 pointer-events-none" />
-                <select 
-                  className="w-full pl-9 pr-8 py-2 bg-white border border-gray-200 rounded-lg appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow cursor-pointer"
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
-                >
-                  <option value="All">All Risk Levels</option>
-                  <option value="High">High Risk</option>
-                  <option value="Medium">Medium Risk</option>
-                  <option value="Low">Low Risk</option>
-                </select>
-              </div>
-            </div>
+            <select 
+              className="w-full sm:w-auto pl-4 pr-8 py-2 bg-white border border-gray-100 rounded-xl appearance-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-shadow cursor-pointer text-sm"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+            >
+              <option value="All">All Risk</option>
+              <option value="High">High Risk</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low Risk</option>
+            </select>
           </div>
         </div>
 
         {/* Analytics Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Chart */}
-          <Card className="lg:col-span-2 min-h-[300px] flex flex-col">
+          <Card className="lg:col-span-2 min-h-[300px] flex flex-col p-6 rounded-3xl border-gray-100 shadow-sm">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-blue-600" /> Report Trends
+                <TrendingUp className="w-5 h-5 text-emerald-600" /> Report Trends
               </h3>
-              <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">Last 7 Days</span>
+              <span className="text-[10px] font-bold text-gray-400 bg-gray-50 px-3 py-1 rounded-full uppercase tracking-widest">Last 7 Days</span>
             </div>
             <div className="flex-1">
               <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={trends}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f8fafc" />
                   <XAxis 
                     dataKey="date" 
                     axisLine={false} 
                     tickLine={false} 
-                    tick={{fontSize: 10, fill: '#9ca3af'}}
+                    tick={{fontSize: 10, fill: '#94a3b8'}}
                     dy={10}
                     tickFormatter={(str) => str.split('-').slice(1).join('/')}
                   />
                   <YAxis 
                     axisLine={false} 
                     tickLine={false} 
-                    tick={{fontSize: 12, fill: '#9ca3af'}}
+                    tick={{fontSize: 10, fill: '#94a3b8'}}
                   />
                   <Tooltip 
-                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '12px' }}
                   />
                   <Line 
                     type="monotone" 
                     dataKey="reports" 
-                    stroke="#2563eb" 
-                    strokeWidth={3} 
-                    dot={{ r: 4, fill: '#2563eb', strokeWidth: 2, stroke: '#fff' }}
+                    stroke="#10b981" 
+                    strokeWidth={4} 
+                    dot={{ r: 4, fill: '#10b981', strokeWidth: 2, stroke: '#fff' }}
                     activeDot={{ r: 6, strokeWidth: 0 }}
                   />
                 </LineChart>
@@ -194,12 +191,12 @@ export default function FraudReports() {
           </Card>
 
           {/* Distribution Chart */}
-          <Card className="min-h-[300px] flex flex-col">
+          <Card className="min-h-[300px] flex flex-col p-6 rounded-3xl border-gray-100 shadow-sm">
             <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2 mb-6">
-              <BarChart2 className="w-5 h-5 text-purple-600" /> Risk Distribution
+              <BarChart2 className="w-5 h-5 text-emerald-600" /> Distribution
             </h3>
             <div className="flex-1 flex items-center justify-center">
-              <div className="space-y-4 w-full">
+              <div className="space-y-6 w-full">
                 {[
                   { level: 'High', count: highRiskCount, color: 'bg-red-500' },
                   { level: 'Medium', count: mediumRiskCount, color: 'bg-yellow-500' },
@@ -208,13 +205,13 @@ export default function FraudReports() {
                    const percentage = (item.count / totalItems) * 100;
                    
                    return (
-                     <div key={item.level} className="space-y-1">
-                       <div className="flex justify-between text-xs font-medium text-gray-600">
+                     <div key={item.level} className="space-y-2">
+                       <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                          <span>{item.level} Risk</span>
                          <span>{item.count} Reports</span>
                        </div>
-                       <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
-                         <div className={`${item.color} h-full transition-all duration-1000`} style={{ width: `${percentage}%` }}></div>
+                       <div className="w-full bg-gray-50 rounded-full h-2.5 overflow-hidden border border-gray-100">
+                         <div className={`${item.color} h-full transition-all duration-1000 shadow-sm`} style={{ width: `${percentage}%` }}></div>
                        </div>
                      </div>
                    );
@@ -226,10 +223,10 @@ export default function FraudReports() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatsCard title="Total Reports" value={stats.totalReports} icon={<ShieldAlert className="w-6 h-6 text-blue-600" />} />
+          <StatsCard title="Total" value={stats.totalReports} icon={<ShieldAlert className="w-6 h-6 text-emerald-600" />} />
           <StatsCard title="High Risk" value={stats.highRiskCount} icon={<AlertTriangle className="w-6 h-6 text-red-600" />} colorClass="text-red-600" />
-          <StatsCard title="Pending Review" value={stats.totalReports - stats.resolvedCount} icon={<Clock className="w-6 h-6 text-yellow-600" />} colorClass="text-yellow-600" />
-          <StatsCard title="Resolved" value={stats.resolvedCount} icon={<CheckCircle className="w-6 h-6 text-green-600" />} colorClass="text-green-600" />
+          <StatsCard title="Pending" value={stats.totalReports - stats.resolvedCount} icon={<Clock className="w-6 h-6 text-yellow-600" />} colorClass="text-yellow-600" />
+          <StatsCard title="Resolved" value={stats.resolvedCount} icon={<CheckCircle className="w-6 h-6 text-emerald-600" />} colorClass="text-emerald-600" />
         </div>
 
         {/* Main Table Content */}
@@ -237,7 +234,7 @@ export default function FraudReports() {
           {reportsLoading ? (
             <div className="grid grid-cols-1 gap-4">
               {[1, 2, 3].map(i => (
-                <div key={i} className="h-20 bg-gray-200/50 animate-pulse rounded-xl"></div>
+                <div key={i} className="h-20 bg-gray-100 animate-pulse rounded-2xl"></div>
               ))}
             </div>
           ) : (
@@ -270,6 +267,6 @@ export default function FraudReports() {
         report={selectedReport}
         onAction={handleAction}
       />
-    </div>
+    </DashboardLayout>
   );
 }
