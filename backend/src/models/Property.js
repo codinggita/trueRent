@@ -14,9 +14,18 @@ const propertySchema = new mongoose.Schema({
     type: Number,
     required: [true, 'Please add a price'],
   },
+  priceType: {
+    type: String,
+    enum: ['monthly', 'yearly', 'daily'],
+    default: 'monthly',
+  },
   location: {
     type: String,
     required: [true, 'Please add a location'],
+  },
+  coordinates: {
+    lat: { type: Number },
+    lng: { type: Number },
   },
   owner: {
     type: mongoose.Schema.ObjectId,
@@ -40,6 +49,16 @@ const propertySchema = new mongoose.Schema({
   },
   amenities: {
     type: [String],
+  },
+  safetyScore: {
+    type: Number,
+    min: 0,
+    max: 100,
+    default: null,
+  },
+  neighborhood: {
+    type: String,
+    trim: true,
   },
   images: {
     type: [String],
